@@ -1,23 +1,38 @@
+using Microsoft.AspNetCore.Cors;
 using MinimalAPIsMovies2.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Service zone - BEGIN
 
-
-var lastName = builder.Configuration.GetValue<string>("lastName");
-
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(configuration =>
+    {
+        configuration.WithOrigins(builder.Configuration["allowedOrigins"]!).AllowAnyMethod().AllowAnyHeader();
+    });
+    options.AddPolicy("free", configuration =>
+    {
+        configuration.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
+});
 
 //Service Zone - END
 
 
 var app = builder.Build();
 
+builder.Services.AddOutputCache();
 
 //Middlewares zone - BEGIN
 
+app.UseCors();
 
-app.MapGet("/", () => lastName);
+app.UseOutputCache();
+
+app.MapGet("/", () => "Hello World");
+
+
 
 app.MapGet("/genres", ()=>
 {
@@ -41,7 +56,7 @@ app.MapGet("/genres", ()=>
     };
 
     return genres; 
-});
+}).CacheOutput(c=> c.Expire(TimeSpan.FromSeconds(15)));
 
 //Middlewares zone - END
 
