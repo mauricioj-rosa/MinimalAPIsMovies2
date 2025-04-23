@@ -17,14 +17,30 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddOutputCache();
+
+builder.Services.AddOutputCache();
+
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSwaggerGen();
+
 //Service Zone - END
 
 
 var app = builder.Build();
 
-builder.Services.AddOutputCache();
 
 //Middlewares zone - BEGIN
+
+//if (builder.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseCors();
 
