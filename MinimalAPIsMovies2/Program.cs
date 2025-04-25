@@ -1,9 +1,13 @@
 using Microsoft.AspNetCore.Cors;
+using Microsoft.EntityFrameworkCore;
+using MinimalAPIsMovies2;
 using MinimalAPIsMovies2.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Service zone - BEGIN
+
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer("DefaultConnection"));
 
 builder.Services.AddCors(options =>
 {
