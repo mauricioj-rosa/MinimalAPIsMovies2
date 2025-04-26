@@ -1,3 +1,4 @@
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.EntityFrameworkCore;
 using MinimalAPIsMovies2;
@@ -63,7 +64,7 @@ app.MapGet("/genres", async (IGenresRepository repository)=>
         
 }).CacheOutput(c=> c.Expire(TimeSpan.FromSeconds(15)));
 
-app.MapGet($"/genres/{id}", async (int id, IGenresRepository repository) =>
+app.MapGet("/genres/{id:int}", async (int id, IGenresRepository repository) =>
 {
     var genre = await repository.GetById(id);
     if (genre is null)
