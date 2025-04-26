@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.EntityFrameworkCore;
 using MinimalAPIsMovies2;
 using MinimalAPIsMovies2.Entities;
+using MinimalAPIsMovies2.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<IGenresRepository, GenresRepository>();
 //Service Zone - END
 
 
@@ -54,29 +56,29 @@ app.MapGet("/", () => "Hello World");
 
 
 
-app.MapGet("/genres", ()=>
+app.MapGet("/genres", async (IGenresRepository repository)=>
 {
-    var genres = new List<Genre>()
-    {
-        new Genre
-        {
-            Id = 1,
-            Name = "Drama"
-        },
-        new Genre
-        {
-            Id = 2,
-            Name= "Action"
-        },
-        new Genre
-        {
-            Id = 3,
-            Name= "Comedy"
-        }
-    };
-
-    return genres; 
+    return await repository.GetAll();
+    
+        
 }).CacheOutput(c=> c.Expire(TimeSpan.FromSeconds(15)));
+
+app.MapGet($"/genres/{id}", async (int id, IGenresRepository repository) =>
+{
+    var genre = await repository.GetById(id);
+    if (genre is null)
+    {
+        return Results.NotFound();
+    }
+    return Results.Ok(genre);
+});
+
+app.MapPost("/genres", async (Genre genre, IGenresRepository repository) =>
+{
+    var id = await repository.Create(genre);
+    return Results.Created($"/genres/{id}", genre);
+});
+
 
 //Middlewares zone - END
 
