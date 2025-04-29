@@ -24,6 +24,7 @@ namespace MinimalAPIsMovies2.Migrations
                 });
         }
 
+
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
