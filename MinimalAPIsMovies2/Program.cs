@@ -67,12 +67,13 @@ app.MapGet("/genres", async (IGenresRepository repository)=>
 app.MapGet("/genres/{id:int}", async (int id, IGenresRepository repository) =>
 {
     var genre = await repository.GetById(id);
+
     if (genre is null)
     {
         return Results.NotFound();
     }
     return Results.Ok(genre);
-});
+}); 
 
 app.MapPost("/genres", async (Genre genre, IGenresRepository repository) =>
 {
