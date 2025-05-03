@@ -1,5 +1,6 @@
 using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 using MinimalAPIsMovies2;
 using MinimalAPIsMovies2.Entities;
@@ -65,7 +66,7 @@ app.MapGet("/genres", async (IGenresRepository repository)=>
     return await repository.GetAll();
     
         
-}).CacheOutput(c=> c.Expire(TimeSpan.FromSeconds(15)));
+}).CacheOutput(c=> c.Expire(TimeSpan.FromSeconds(15)).Tag("genres-get"));
 
 app.MapGet("/genres/{id:int}", async (int id, IGenresRepository repository) =>
 {
@@ -78,9 +79,10 @@ app.MapGet("/genres/{id:int}", async (int id, IGenresRepository repository) =>
     return Results.Ok(genre);
 }); 
 
-app.MapPost("/genres", async (Genre genre, IGenresRepository repository) =>
+app.MapPost("/genres", async (Genre genre, IGenresRepository repository,IOutputCacheStore outputCacheStore) =>
 {
     var id = await repository.Create(genre);
+    await outputCacheStore.EvictByTagAsync("genres-get", default);
     return Results.Created($"/genres/{id}", genre);
 });
 
