@@ -87,6 +87,19 @@ app.MapPost("/genres", async (Genre genre, IGenresRepository repository,IOutputC
 });
 
 
+app.MapPut("/genres/{id:int}", async (int id, Genre genre, IGenresRepository repository, IOutputCacheStore outputCacheStore) =>
+{
+     var exists = await repository.Exists(id);
+
+    if (!exists)
+    {
+        return Results.NotFound();
+    }
+    await repository.Update(genre);
+    await outputCacheStore.EvictByTagAsync("genre-get", default);
+    return Results.NoContent();
+});
+
 //Middlewares zone - END
 
 app.Run();
