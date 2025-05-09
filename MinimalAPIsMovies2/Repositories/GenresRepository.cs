@@ -19,6 +19,11 @@ namespace MinimalAPIsMovies2.Repositories
             return genre.Id;
         }
 
+        public async Task Delete(int id)
+        {
+            await context.Genres.Where(g=>g.Id==id).ExecuteDeleteAsync();
+        }
+
         public async Task<bool> Exists(int id)
         {
             return await context.Genres.AnyAsync(g=>g.Id==id);
