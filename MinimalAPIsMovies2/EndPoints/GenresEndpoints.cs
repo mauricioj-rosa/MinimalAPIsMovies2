@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.OutputCaching;
+using MinimalAPIsMovies2.DTOs;
 using MinimalAPIsMovies2.Entities;
+using MinimalAPIsMovies2.Migrations;
 using MinimalAPIsMovies2.Repositories;
 
 namespace MinimalAPIsMovies2.EndPoints
@@ -20,13 +23,15 @@ namespace MinimalAPIsMovies2.EndPoints
 
 
 
-        static async Task<Ok<List<Genre>>> GetGenres(IGenresRepository repository)
+        static async Task<Ok<List<GenreDTO>>> GetGenres(IGenresRepository repository)
         {
             var genres = await repository.GetAll();
-            return TypedResults.Ok(genres);
+            var genresDTO = genres.Select(g => new GenreDTO { Id = g.Id, Name = g.Name }).ToList();
+            
+            return TypedResults.Ok(genresDTO);
         }
 
-        static async Task<Results<Ok<Genre>, NotFound>> GetById(int id, IGenresRepository repository)
+        static async Task<Results<Ok<GenreDTO>, NotFound>> GetById(int id, IGenresRepository repository)
         {
             var genre = await repository.GetById(id);
 
@@ -34,17 +39,31 @@ namespace MinimalAPIsMovies2.EndPoints
             {
                 return TypedResults.NotFound();
             }
-            return TypedResults.Ok(genre);
+            var genreDTO = new GenreDTO
+            {
+                Id = genre.Id,
+                Name = genre.Name,
+            };
+            return TypedResults.Ok(genreDTO);
         }
 
-        static async Task<Created<Genre>> Create(Genre genre, IGenresRepository repository, IOutputCacheStore outputCacheStore)
+        static async Task<Created<GenreDTO>> Create(CreateGenreDTO createGenreDTO, IGenresRepository repository, IOutputCacheStore outputCacheStore)
         {
+            var genre = new Genre
+            {
+                Name= createGenreDTO.Name
+            };
+            var genreDTO = new GenreDTO
+            {
+                Id = genre.Id,
+                Name = genre.Name,
+            };
             var id = await repository.Create(genre);
             await outputCacheStore.EvictByTagAsync("genres-get", default);
-            return TypedResults.Created($"/{id}", genre);
+            return TypedResults.Created($"/{id}", genreDTO);
         }
 
-        static async Task<Results<NotFound, NoContent>> Update(int id, Genre genre, IGenresRepository repository, IOutputCacheStore outputCacheStore)
+        static async Task<Results<NotFound, NoContent>> Update(int id, CreateGenreDTO createGenreDTO, IGenresRepository repository, IOutputCacheStore outputCacheStore)
         {
             var exists = await repository.Exists(id);
 
@@ -52,6 +71,10 @@ namespace MinimalAPIsMovies2.EndPoints
             {
                 return TypedResults.NotFound();
             }
+            var genre = new Genre
+            {
+                Name = createGenreDTO.Name
+            };
             await repository.Update(genre);
             await outputCacheStore.EvictByTagAsync("genre-get", default);
             return TypedResults.NoContent();
