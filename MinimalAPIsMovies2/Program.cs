@@ -11,6 +11,8 @@ using MinimalAPIsMovies2.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
 // Service zone - BEGIN
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer("DefaultConnection"));
@@ -39,6 +41,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IGenresRepository, GenresRepository>();
+
+builder.Services.AddAutoMapper(typeof(Program));
 //Service Zone - END
 
 
