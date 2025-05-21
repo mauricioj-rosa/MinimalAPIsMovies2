@@ -69,6 +69,7 @@ app.MapGet("/", () => "Hello World");
 
 app.MapGroup("/genres").MapGenres();
 
+app.MapGroup("/actors").MapActors();
 
 
 //Middlewares zone - END
