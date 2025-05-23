@@ -18,7 +18,7 @@ namespace MinimalAPIsMovies2.Repositories
         }
         public async Task<int> Create(Actor actor)
         {
-            context.Add(actor);
+            context.Actors.Add(actor);
             await context.SaveChangesAsync();
             return actor.Id;
         }
