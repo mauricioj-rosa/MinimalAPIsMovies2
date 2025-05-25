@@ -12,7 +12,7 @@ using MinimalAPIsMovies2;
 namespace MinimalAPIsMovies2.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250523235453_Actors")]
+    [Migration("20250525133434_Actors")]
     partial class Actors
     {
         /// <inheritdoc />

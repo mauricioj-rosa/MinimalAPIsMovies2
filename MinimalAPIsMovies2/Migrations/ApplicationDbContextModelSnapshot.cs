@@ -39,8 +39,8 @@ namespace MinimalAPIsMovies2.Migrations
                         .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("Picture")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(max)");
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
