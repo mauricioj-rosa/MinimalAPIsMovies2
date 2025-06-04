@@ -17,7 +17,7 @@ namespace MinimalAPIsMovies2
 
             modelBuilder.Entity<Genre>().Property(p=>p.Name).HasMaxLength(150);
             modelBuilder.Entity<Actor>().Property(p => p.Name).HasMaxLength(150);
-            modelBuilder.Entity<Actor>().Property(p=>p.Picture).IsUnicode();
+            modelBuilder.Entity<Actor>().Property(p=>p.Picture).IsUnicode(false);
         }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Actor> Actors { get; set; }

@@ -24,7 +24,7 @@ namespace MinimalAPIsMovies2.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Actors", XmlConfigurationExtensions => XmlConfigurationExtensions.Id);
+                    table.PrimaryKey("PK_Actors", x=>x.Id);
                 });
         }
 

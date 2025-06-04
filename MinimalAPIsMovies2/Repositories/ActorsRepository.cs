@@ -20,7 +20,7 @@ namespace MinimalAPIsMovies2.Repositories
         {
             context.Actors.Add(actor);
             await context.SaveChangesAsync();
-            return actor.Id;
+            return actor.Id; 
         }
         public async Task<bool> Exist(int id)
         {
